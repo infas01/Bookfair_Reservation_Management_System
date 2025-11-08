@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS users (
                                      email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
-    business_name VARCHAR(255) NOT NULL,
+    business_name VARCHAR(255),
     phone VARCHAR(20),
-    role VARCHAR(20) DEFAULT 'USER' CHECK (role IN ('USER', 'ADMIN')),
+    role VARCHAR(20) DEFAULT 'USER' CHECK (role IN ('USER', 'ADMIN','EMPLOYEE')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
@@ -87,9 +87,11 @@ INSERT INTO stalls (name, size, location, dimensions, price, is_reserved) VALUES
 
 -- Insert admin user (password: admin123 - BCrypt hashed)
 INSERT INTO users (email, password, name, business_name, phone, role) VALUES
-    ('admin@bookfair.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
-     'Admin User', 'BookFair Admin', '+94771234567', 'ADMIN')
-    ON CONFLICT (email) DO NOTHING;
+                                                                          ('admin@bookfair.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+                                                                           'Admin User', NULL, '+94771234567', 'ADMIN'),
+                                                                          ('employee@bookfair.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+                                                                           'Employee User', NULL, '+94771234568', 'EMPLOYEE')
+ON CONFLICT (email) DO NOTHING;
 
 -- Function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()
