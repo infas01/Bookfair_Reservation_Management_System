@@ -1,4 +1,4 @@
-# Reservation Branch — Introduction
+# Reservation Branch - Introduction
 
 This document introduces the "Reservation" branch of the BookFair Reservation Management System and summarizes the core database schema present in `schema.sql` under `docs/database/`.
 
@@ -17,13 +17,13 @@ Provide a concise overview of what the Reservation branch contains, highlight mi
 
 The current `schema.sql` contains the following core tables and notable items:
 
-- `users` — IAM table with: id (BIGSERIAL), email (unique), password (BCrypt hashed sample), name, business_name, phone, role (USER/ADMIN/EMPLOYEE), created_at, updated_at. Indexes: `idx_users_email`, `idx_users_role`.
+- `users` - IAM table with: id (BIGSERIAL), email (unique), password (BCrypt hashed sample), name, business_name, phone, role (USER/ADMIN/EMPLOYEE), created_at, updated_at. Indexes: `idx_users_email`, `idx_users_role`.
 
-- `stalls` — inventory of stalls with: id, name (unique), size (SMALL/MEDIUM/LARGE), location, dimensions, price, is_reserved (boolean), created_at, updated_at. Indexes: `idx_stalls_name`, `idx_stalls_is_reserved`, `idx_stalls_size`.
+- `stalls` - inventory of stalls with: id, name (unique), size (SMALL/MEDIUM/LARGE), location, dimensions, price, is_reserved (boolean), created_at, updated_at. Indexes: `idx_stalls_name`, `idx_stalls_is_reserved`, `idx_stalls_size`.
 
-- `literary_genres` — per-user genres: id, user_id, genre_name, created_at. Indexes: `idx_genres_user_id`, `idx_genres_name`.
+- `literary_genres` - per-user genres: id, user_id, genre_name, created_at. Indexes: `idx_genres_user_id`, `idx_genres_name`.
 
-- `reservations` — reservations table: id, user_id, stall_id, qr_code (unique), status (CONFIRMED/CANCELLED), reservation_date, cancelled_at. Indexes: `idx_reservations_user_id`, `idx_reservations_stall_id`, `idx_reservations_status`, `idx_reservations_qr_code`.
+- `reservations` - reservations table: id, user_id, stall_id, qr_code (unique), status (CONFIRMED/CANCELLED), reservation_date, cancelled_at. Indexes: `idx_reservations_user_id`, `idx_reservations_stall_id`, `idx_reservations_status`, `idx_reservations_qr_code`.
 
 - A trigger+function to update `updated_at` on `users` and `stalls` is present.
 
@@ -63,14 +63,14 @@ These are the most important, low-risk DB changes to implement next in the Reser
 
 Implement the following endpoints/services with transactional guarantees and RBAC enforcement:
 
-- POST /reservations — create a reservation
+- POST /reservations - create a reservation
   - Input: user_id (from token), stall_id, optional metadata
   - Output: reservation record with `qr_code`
   - Concurrency: ensure atomic check-and-insert (SELECT ... FOR UPDATE or DB constraint + retry)
 
-- GET /reservations/:id — view a reservation (owner/admin/employee)
-- GET /users/:id/reservations — list user reservations
-- DELETE /reservations/:id or POST /reservations/:id/cancel — cancel a reservation (set status and cancelled_at)
+- GET /reservations/:id - view a reservation (owner/admin/employee)
+- GET /users/:id/reservations - list user reservations
+- DELETE /reservations/:id or POST /reservations/:id/cancel - cancel a reservation (set status and cancelled_at)
 
 Implementation notes:
 - Generate a collision-resistant `qr_code` (e.g., UUIDv4 base64 or signed token), track expiry/version if needed.
