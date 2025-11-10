@@ -29,7 +29,7 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "business_name", nullable = false)
+    @Column(name = "business_name")
     private String businessName;
 
     private String phone;
@@ -44,5 +44,7 @@ public class User {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+
 }
 
