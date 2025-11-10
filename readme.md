@@ -122,11 +122,3 @@ Implementation notes:
 - Users deleted while they have active reservations.
 
 ---
-
-If you want, I can:
-
-- Convert these DB improvements into a migration script (specify migration tool).
-- Implement the reservation creation API stub for the backend stack you use (Node/Express, Spring Boot, etc.).
-- Add the concurrency integration test harness.
-
-Tell me which of the above you'd like me to do next and your preferred backend/migration tooling.
