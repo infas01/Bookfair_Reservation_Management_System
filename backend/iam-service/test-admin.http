@@ -1,0 +1,100 @@
+### Test Admin User Management
+
+### 1. Login as Admin
+POST http://localhost:8081/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@bookfair.com",
+  "password": "admin123"
+}
+
+> {%
+    client.global.set("admin_token", response.body.message);
+%}
+
+###
+
+### 2. Get All Users
+GET http://localhost:8081/api/admin/users
+Authorization: Bearer {{admin_token}}
+
+###
+
+### 3. Get Users by Role (USER)
+GET http://localhost:8081/api/admin/users?role=USER
+Authorization: Bearer {{admin_token}}
+
+###
+
+### 4. Get Users by Role (EMPLOYEE)
+GET http://localhost:8081/api/admin/users?role=EMPLOYEE
+Authorization: Bearer {{admin_token}}
+
+###
+
+### 5. Get User by ID
+GET http://localhost:8081/api/admin/users/2
+Authorization: Bearer {{admin_token}}
+
+###
+
+### 6. Update User Role
+PUT http://localhost:8081/api/admin/users/2/role
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "role": "EMPLOYEE"
+}
+
+###
+
+### 7. Get User Stats
+GET http://localhost:8081/api/admin/stats
+Authorization: Bearer {{admin_token}}
+
+###
+
+### 8. Delete User
+DELETE http://localhost:8081/api/admin/users/3
+Authorization: Bearer {{admin_token}}
+
+###
+
+### 9. Try to delete admin (should fail if last admin)
+DELETE http://localhost:8081/api/admin/users/1
+Authorization: Bearer {{admin_token}}
+
+###
+
+### 10. Test Non-Admin Access (Login as User)
+POST http://localhost:8081/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "password123"
+}
+
+> {%
+    client.global.set("user_token", response.body.message);
+%}
+
+###
+
+### 11. Try to access admin endpoint as user (should fail)
+GET http://localhost:8081/api/admin/users
+Authorization: Bearer {{user_token}}
+
+###
+
+### 12. Test invalid role update
+PUT http://localhost:8081/api/admin/users/2/role
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "role": "INVALID_ROLE"
+}
+
