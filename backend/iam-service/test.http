@@ -1,0 +1,142 @@
+### 1. Health Check
+GET http://localhost:8081/api/auth/test
+
+###
+
+### 2. Register New User
+POST http://localhost:8081/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "password": "password123",
+  "phoneNumber": "0771234567",
+  "businessName": "John's Bookstore"
+}
+
+###
+
+### 3. Register User Without Business Name
+POST http://localhost:8081/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Jane Smith",
+  "email": "jane.smith@example.com",
+  "password": "password123",
+  "phoneNumber": "0771234568"
+}
+
+###
+
+### 4. Login as Regular User
+POST http://localhost:8081/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com",
+  "password": "password123"
+}
+
+###
+
+### 5. Login as Admin (with NEW password hash)
+POST http://localhost:8081/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@bookfair.com",
+  "password": "admin123"
+}
+
+> {%
+    client.global.set("admin_token", response.body.message);
+    client.log("Admin Token: " + response.body.message);
+%}
+
+###
+
+### 6. Register Employee (requires admin token from step 5)
+POST http://localhost:8081/api/auth/admin/register-employee
+Content-Type: application/json
+Authorization: Bearer {{admin_token}}
+
+{
+  "email": "newemployee@bookfair.com",
+  "password": "employee123",
+  "name": "New Employee",
+  "phone": "0771234569"
+}
+
+###
+
+### 7. Login as Employee
+POST http://localhost:8081/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "employee@bookfair.com",
+  "password": "admin123"
+}
+
+###
+
+### 8. Test Duplicate Email Error
+POST http://localhost:8081/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "password": "password123",
+  "phoneNumber": "0771234567"
+}
+
+###
+
+### 9. Test Invalid Login
+POST http://localhost:8081/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com",
+  "password": "wrongpassword"
+}
+
+###
+
+### 10. Test Missing Required Fields
+POST http://localhost:8081/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "incomplete@example.com",
+  "password": "123"
+}
+
+###
+
+### 11. Test Invalid Email Format
+POST http://localhost:8081/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "invalid-email",
+  "password": "password123",
+  "phoneNumber": "0771234567"
+}
+
+###
+
+### 12. Test Employee Registration Without Admin Token
+POST http://localhost:8081/api/auth/admin/register-employee
+Content-Type: application/json
+
+{
+  "email": "unauthorized@bookfair.com",
+  "password": "employee123",
+  "name": "Unauthorized Employee",
+  "phone": "0771234570"
+}
