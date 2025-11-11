@@ -4,6 +4,7 @@ import com.brms.iamservice.dto.AuthResponse;
 import com.brms.iamservice.dto.EmployeeRegisterRequest;
 import com.brms.iamservice.dto.LoginRequest;
 import com.brms.iamservice.dto.RegisterRequest;
+import com.brms.iamservice.entity.RefreshToken;
 import com.brms.iamservice.entity.User;
 import com.brms.iamservice.repository.UserRepository;
 import com.brms.iamservice.security.JwtTokenProvider;
@@ -22,6 +23,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -78,10 +80,43 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        // Generate refresh token
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+
         return new AuthResponse(
                 token,
                 user.getId(),
-                user.getEmail()
+                user.getEmail(),
+                refreshToken.getToken()
         );
+    }
+
+    public AuthResponse refreshAccessToken(String refreshTokenStr) {
+        RefreshToken refreshToken = refreshTokenService.findByToken(refreshTokenStr)
+                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
+
+        refreshToken = refreshTokenService.verifyExpiration(refreshToken);
+
+        if (refreshToken.isRevoked()) {
+            throw new RuntimeException("Refresh token has been revoked");
+        }
+
+        User user = refreshToken.getUser();
+
+        String newAccessToken = jwtTokenProvider.generateTokenFromEmail(user.getEmail());
+
+        return new AuthResponse(
+                newAccessToken,
+                user.getId(),
+                user.getEmail(),
+                refreshToken.getToken()
+        );
+    }
+
+    public void logout(String refreshTokenStr) {
+        RefreshToken refreshToken = refreshTokenService.findByToken(refreshTokenStr)
+                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
+
+        refreshTokenService.revokeToken(refreshToken);
     }
 }

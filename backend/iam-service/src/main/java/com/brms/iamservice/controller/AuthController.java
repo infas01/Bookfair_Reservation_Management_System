@@ -1,9 +1,6 @@
 package com.brms.iamservice.controller;
 
-import com.brms.iamservice.dto.AuthResponse;
-import com.brms.iamservice.dto.EmployeeRegisterRequest;
-import com.brms.iamservice.dto.LoginRequest;
-import com.brms.iamservice.dto.RegisterRequest;
+import com.brms.iamservice.dto.*;
 import com.brms.iamservice.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +45,28 @@ public class AuthController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Invalid email or password");
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+        try {
+            AuthResponse response = authService.refreshAccessToken(request.getRefreshToken());
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@Valid @RequestBody LogoutRequest request) {
+        try {
+            authService.logout(request.getRefreshToken());
+            return ResponseEntity.ok("Logged out successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
         }
     }
 
