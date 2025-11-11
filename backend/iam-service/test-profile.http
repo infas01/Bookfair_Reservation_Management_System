@@ -1,0 +1,88 @@
+### Test Profile Management
+
+### 1. Register a test user
+POST http://localhost:8081/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "testuser@example.com",
+  "password": "password123",
+  "phoneNumber": "0771234567",
+  "businessName": "Test Business"
+}
+
+###
+
+### 2. Login
+POST http://localhost:8081/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "password123"
+}
+
+> {%
+    client.global.set("user_token", response.body.message);
+%}
+
+###
+
+### 3. Get Profile
+GET http://localhost:8081/api/profile
+Authorization: Bearer {{user_token}}
+
+###
+
+### 4. Update Profile
+PUT http://localhost:8081/api/profile
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "name": "Test User Updated",
+  "businessName": "Updated Business Name",
+  "phone": "0779876543"
+}
+
+###
+
+### 5. Change Password
+PUT http://localhost:8081/api/profile/change-password
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "currentPassword": "password123",
+  "newPassword": "newpassword123"
+}
+
+###
+
+### 6. Login with new password
+POST http://localhost:8081/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "newpassword123"
+}
+
+###
+
+### 7. Test wrong current password
+PUT http://localhost:8081/api/profile/change-password
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "currentPassword": "wrongpassword",
+  "newPassword": "anotherpassword"
+}
+
+###
+
+### 8. Test unauthorized access
+GET http://localhost:8081/api/profile
+
