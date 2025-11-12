@@ -35,6 +35,14 @@ export const authUtils = {
     const user = authUtils.getUser();
     return user?.role === role;
   },
+
+  isAdmin: () => {
+    return authUtils.hasRole('ADMIN');
+  },
+
+  isEmployee: () => {
+    return authUtils.hasRole('EMPLOYEE');
+  },
 };
 
 export default authUtils;

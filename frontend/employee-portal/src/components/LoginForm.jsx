@@ -21,8 +21,6 @@ const LoginForm = ({ onSubmit, loading }) => {
 
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
     }
 
     setErrors(newErrors);
@@ -69,7 +67,7 @@ const LoginForm = ({ onSubmit, loading }) => {
             className={`block w-full pl-10 pr-3 py-3 border ${
               errors.email ? 'border-red-500' : 'border-secondary-300'
             } rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all`}
-            placeholder="you@example.com"
+            placeholder="you@bookfair.com"
           />
         </div>
         {errors.email && (

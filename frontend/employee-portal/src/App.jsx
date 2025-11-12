@@ -1,70 +1,104 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from 'react-router-dom';
-import EmployeeAuth from './pages/EmployeeAuth';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import authUtils from './utils/authUtils';
 
-const ProtectedRoute = ({ children }) => {
+// Pages
+import Login from './pages/Login';
+import EmployeeHome from './pages/EmployeeHome';
+import Profile from './pages/Profile';
+import Dashboard from './pages/admin/Dashboard';
+import RegisterEmployee from './pages/admin/RegisterEmployee';
+import UserManagement from './pages/admin/UserManagement';
+
+// Protected Route Component
+const ProtectedRoute = ({ children, adminOnly = false }) => {
   const isAuthenticated = authUtils.isAuthenticated();
-  return isAuthenticated ? children : <Navigate to="/auth" />;
+  const isAdmin = authUtils.isAdmin();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (adminOnly && !isAdmin) {
+    return <Navigate to="/home" replace />;
+  }
+
+  return children;
 };
 
-const Home = () => {
-  const user = authUtils.getUser();
+// Public Route Component (redirect if already logged in)
+const PublicRoute = ({ children }) => {
+  const isAuthenticated = authUtils.isAuthenticated();
+  const isAdmin = authUtils.isAdmin();
 
-  const handleLogout = () => {
-    const refreshToken = authUtils.getRefreshToken();
-    authUtils.clearAuth();
-    window.location.href = '/auth';
-  };
+  if (isAuthenticated) {
+    return <Navigate to={isAdmin ? '/admin/dashboard' : '/home'} replace />;
+  }
 
-  return (
-    <div className="min-h-screen bg-secondary-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold text-secondary-900 mb-4">
-            Welcome to Employee Portal
-          </h1>
-          <div className="bg-primary-50 border border-primary-200 rounded-lg p-4 mb-6">
-            <p className="text-secondary-700">
-              <span className="font-semibold">Name:</span> {user?.name}
-            </p>
-            <p className="text-secondary-700">
-              <span className="font-semibold">Email:</span> {user?.email}
-            </p>
-            <p className="text-secondary-700">
-              <span className="font-semibold">Role:</span> {user?.role}
-            </p>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-          >
-            Logout
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+  return children;
 };
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/auth" element={<EmployeeAuth />} />
+        {/* Public Routes */}
         <Route
-          path="/"
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+
+        {/* Employee Routes */}
+        <Route
+          path="/home"
           element={
             <ProtectedRoute>
-              <Home />
+              <EmployeeHome />
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/auth" />} />
+
+        {/* Admin Routes */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute adminOnly>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/register-employee"
+          element={
+            <ProtectedRoute adminOnly>
+              <RegisterEmployee />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute adminOnly>
+              <UserManagement />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Shared Routes */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        {/* Default Route */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
   );
