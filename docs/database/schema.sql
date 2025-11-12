@@ -87,9 +87,9 @@ INSERT INTO stalls (name, size, location, dimensions, price, is_reserved) VALUES
 
 -- Insert admin user (password: admin123 - BCrypt hashed)
 INSERT INTO users (email, password, name, business_name, phone, role) VALUES
-                                                                          ('admin@bookfair.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+                                                                          ('admin@bookfair.com', '$2a$10$I4VCY3.xCmkj0T9krmWQvufyjQ5.nidZnwbddCh13CX8ujFcKHZa6',
                                                                            'Admin User', NULL, '+94771234567', 'ADMIN'),
-                                                                          ('employee@bookfair.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+                                                                          ('employee@bookfair.com', '$2a$10$I4VCY3.xCmkj0T9krmWQvufyjQ5.nidZnwbddCh13CX8ujFcKHZa6',
                                                                            'Employee User', NULL, '+94771234568', 'EMPLOYEE')
 ON CONFLICT (email) DO NOTHING;
 
