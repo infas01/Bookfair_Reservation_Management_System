@@ -68,6 +68,7 @@ DB_PORT=5432
 DB_NAME=bookfair_db
 DB_USER=postgres
 DB_PASSWORD=your_password
+DB_MAX_CONNECTIONS=20
 
 # JWT
 JWT_SECRET=your_jwt_secret_key
@@ -75,6 +76,18 @@ JWT_EXPIRES_IN=24h
 
 # CORS
 CORS_ORIGIN=http://localhost:5173
+```
+
+### Database Setup
+
+1. Install PostgreSQL (version 14 or higher)
+2. Create the database:
+```sql
+CREATE DATABASE bookfair_db;
+```
+3. Test the connection:
+```bash
+npm run test:db
 ```
 
 ## 📜 Available Scripts
@@ -85,6 +98,9 @@ npm run dev          # Start with nodemon (auto-reload)
 
 # Production
 npm start            # Start production server
+
+# Database
+npm run test:db      # Test database connection
 
 # Testing
 npm test             # Run all tests
@@ -224,4 +240,4 @@ For support, email support@bookfair.com or create an issue in the repository.
 
 ---
 
-**Current Status**: Commit 1 - Project Initialized ✅
+**Current Status**: Commit 3 - Database Configuration Complete ✅
