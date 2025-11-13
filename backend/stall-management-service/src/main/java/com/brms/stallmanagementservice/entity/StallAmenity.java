@@ -17,7 +17,7 @@ import java.util.Set;
 public class StallAmenity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 100, unique = true)

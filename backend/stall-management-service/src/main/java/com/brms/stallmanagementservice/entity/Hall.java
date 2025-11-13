@@ -19,14 +19,14 @@ import java.util.List;
 public class Hall {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 120)
     private String name;
 
     @Column(nullable = false, length = 16, unique = true)
-    private String code; // e.g., "A", "B"
+    private String code;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 32)

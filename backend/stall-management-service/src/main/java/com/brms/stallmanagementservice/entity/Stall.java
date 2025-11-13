@@ -23,10 +23,9 @@ import java.util.Set;
 public class Stall {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // e.g., "A01", "B12"
     @Column(nullable = false, length = 16)
     private String code;
 
@@ -38,7 +37,6 @@ public class Stall {
     @Column(nullable = false, length = 32)
     private StallStatus status;
 
-    // Dimensions (optional)
     @Column(precision = 10, scale = 2)
     private BigDecimal widthMeters;
 
@@ -48,11 +46,9 @@ public class Stall {
     @Column(precision = 12, scale = 2)
     private BigDecimal areaSqM;
 
-    // Pricing (optional)
     @Column(precision = 12, scale = 2)
     private BigDecimal basePrice;
 
-    // Simple map geometry (optional): top-left X/Y and W/H (px or arbitrary units)
     private Integer mapX;
     private Integer mapY;
     private Integer mapWidth;
