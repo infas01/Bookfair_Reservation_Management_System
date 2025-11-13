@@ -19,8 +19,7 @@ public class CorsConfig {
         // Use exact origins or patterns (do NOT put paths here)
         // If you need both localhost ports, use patterns:
         config.setAllowedOriginPatterns(List.of(
-                "http://localhost:*",
-                "https://api.dev.payroll.graceconstruction.lk/"
+                "http://localhost:*"
         ));
         // If you prefer strict, replace the pattern with exact allowedOrigins(...)
 
