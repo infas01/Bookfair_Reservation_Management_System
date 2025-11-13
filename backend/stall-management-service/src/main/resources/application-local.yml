@@ -1,0 +1,15 @@
+server:
+  port: 8082
+
+spring:
+    datasource:
+      url: jdbc:postgresql://localhost:5432/brms_stall_db
+      username: postgres
+      password: Himosh1020
+      driver-class-name: org.postgresql.Driver
+
+    jpa:
+        hibernate:
+            ddl-auto: update
+        show-sql: true
+
