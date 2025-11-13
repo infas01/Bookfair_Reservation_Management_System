@@ -27,7 +27,6 @@ public class OpenAPIConfig {
                                 .scheme("bearer")
                                 .bearerFormat("JWT")))
                 .servers(List.of(
-                        new Server().url("http://3.7.248.81:8081"),  // First server URL
                         new Server().url("http://localhost:8081")
                 ));
     }
