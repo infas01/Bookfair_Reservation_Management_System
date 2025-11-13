@@ -1,7 +1,10 @@
 package com.brms.iamservice.security;
 
+import com.brms.iamservice.entity.User;
+import com.brms.iamservice.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +12,9 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
 
+@RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
 
@@ -18,6 +23,8 @@ public class JwtTokenProvider {
 
     @Value("${jwt.expiration}")
     private long jwtExpirationMs;
+
+    private final UserRepository userRepository;
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
@@ -28,8 +35,13 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
 
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+
         return Jwts.builder()
                 .subject(userDetails.getUsername())
+                .claim("roles", user.getRole())  // <— include actual roles
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(getSigningKey())
