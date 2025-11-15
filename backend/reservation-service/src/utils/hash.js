@@ -1,4 +1,9 @@
-// Password hashing utilities placeholder
-// To be implemented in authentication & user management phase
+const bcrypt = require('bcrypt');
 
-module.exports = {};
+const SALT_ROUNDS = 12;
+
+const hashPassword = (plain) => bcrypt.hash(plain, SALT_ROUNDS);
+
+const comparePassword = (plain, hashed) => bcrypt.compare(plain, hashed);
+
+module.exports = { hashPassword, comparePassword };
