@@ -1,4 +1,9 @@
-// QR code generator utilities placeholder
-// To be implemented in core reservation logic phase
+const QRCode = require('qrcode');
 
-module.exports = {};
+const generateQRDataURL = (data) =>
+  QRCode.toDataURL(typeof data === 'string' ? data : JSON.stringify(data), {
+    errorCorrectionLevel: 'H',
+    margin: 1,
+  });
+
+module.exports = { generateQRDataURL };
