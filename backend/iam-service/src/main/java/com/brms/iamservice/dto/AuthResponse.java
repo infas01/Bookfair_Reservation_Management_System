@@ -10,11 +10,13 @@ public class AuthResponse {
     private Long userId;
     private String email;
     private String refreshToken;
+    private String role;
 
     // Keep backward compatibility
     public AuthResponse(String message, Long userId, String email) {
         this.message = message;
         this.userId = userId;
         this.email = email;
+        this.role = role;
     }
 }

@@ -1,4 +1,12 @@
-// Error handler middleware placeholder
-// To be implemented in authentication & user management phase
+const { AppError } = require('../utils/errors');
 
-module.exports = {};
+function errorHandler(err, req, res, next) {
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({ message: err.message });
+  }
+
+  console.error('Unexpected error:', err);
+  return res.status(500).json({ message: 'Internal server error' });
+}
+
+module.exports = errorHandler;

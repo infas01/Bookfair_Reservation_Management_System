@@ -87,7 +87,8 @@ public class AuthService {
                 token,
                 user.getId(),
                 user.getEmail(),
-                refreshToken.getToken()
+                refreshToken.getToken(),
+                user.getRole()
         );
     }
 
@@ -109,7 +110,8 @@ public class AuthService {
                 newAccessToken,
                 user.getId(),
                 user.getEmail(),
-                refreshToken.getToken()
+                refreshToken.getToken(),
+                user.getRole()
         );
     }
 
