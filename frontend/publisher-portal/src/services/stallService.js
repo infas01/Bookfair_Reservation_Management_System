@@ -1,12 +1,14 @@
+// src/services/stallService.js
+
 import axios from 'axios';
 import API_CONFIG from '../config/api';
 import authUtils from '../utils/authUtils';
 
-const apiClient = axios.create({
-  baseURL: API_CONFIG.BASE_URL,
+const stallClient = axios.create({
+  baseURL: API_CONFIG.STALL_SERVICE_BASE_URL,
 });
 
-apiClient.interceptors.request.use(
+stallClient.interceptors.request.use(
   (config) => {
     const token = authUtils.getAccessToken();
     if (token) {
@@ -18,18 +20,40 @@ apiClient.interceptors.request.use(
 );
 
 const stallService = {
-  getAllStalls: async () => {
+  /**
+   * Get paginated stalls.
+   * Backend: GET /api/stalls with optional StallFilter body + page,size
+   */
+  getAllStalls: async (page = 0, size = 100, filter = null) => {
     try {
-      const response = await apiClient.get(API_CONFIG.ENDPOINTS.STALLS.GET_ALL);
+      const response = await stallClient.get(
+        API_CONFIG.ENDPOINTS.STALLS.SEARCH,
+        {
+          params: { page, size },
+          // Spring allows GET with body; axios uses `data` for this
+          ...(filter ? { data: filter } : {}),
+        }
+      );
       return response.data;
     } catch (error) {
       throw error.response?.data || 'Failed to fetch stalls';
     }
   },
 
-  getAvailableStalls: async () => {
+  /**
+   * Convenience helper: only AVAILABLE stalls
+   * Uses StallFilter.status = 'AVAILABLE'
+   */
+  getAvailableStalls: async (page = 0, size = 100) => {
+    const filter = { status: 'AVAILABLE' };
     try {
-      const response = await apiClient.get(API_CONFIG.ENDPOINTS.STALLS.GET_AVAILABLE);
+      const response = await stallClient.get(
+        API_CONFIG.ENDPOINTS.STALLS.SEARCH,
+        {
+          params: { page, size },
+          data: filter,
+        }
+      );
       return response.data;
     } catch (error) {
       throw error.response?.data || 'Failed to fetch available stalls';
@@ -38,7 +62,9 @@ const stallService = {
 
   getStallById: async (stallId) => {
     try {
-      const response = await apiClient.get(API_CONFIG.ENDPOINTS.STALLS.GET_BY_ID(stallId));
+      const response = await stallClient.get(
+        API_CONFIG.ENDPOINTS.STALLS.GET_BY_ID(stallId)
+      );
       return response.data;
     } catch (error) {
       throw error.response?.data || 'Failed to fetch stall details';

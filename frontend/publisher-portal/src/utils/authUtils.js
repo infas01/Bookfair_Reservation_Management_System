@@ -1,3 +1,5 @@
+// src/utils/authUtils.js
+
 export const authUtils = {
   setTokens: (accessToken, refreshToken) => {
     localStorage.setItem('accessToken', accessToken);
@@ -31,9 +33,15 @@ export const authUtils = {
     return !!localStorage.getItem('accessToken');
   },
 
+  // In this system "USER" is the normal publisher/vendor role
   isPublisher: () => {
     const user = authUtils.getUser();
     return user?.role === 'USER';
+  },
+
+  isAdmin: () => {
+    const user = authUtils.getUser();
+    return user?.role === 'ADMIN';
   },
 };
 

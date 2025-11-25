@@ -1,47 +1,47 @@
+// src/utils/authUtils.js
+
 export const authUtils = {
   setTokens: (accessToken, refreshToken) => {
-    sessionStorage.setItem('accessToken', accessToken);
-    sessionStorage.setItem('refreshToken', refreshToken);
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
   },
 
   getAccessToken: () => {
-    return sessionStorage.getItem('accessToken');
+    return localStorage.getItem('accessToken');
   },
 
   getRefreshToken: () => {
-    return sessionStorage.getItem('refreshToken');
+    return localStorage.getItem('refreshToken');
   },
 
   setUser: (user) => {
-    sessionStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(user));
   },
 
   getUser: () => {
-    const user = sessionStorage.getItem('user');
+    const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   },
 
   clearAuth: () => {
-    sessionStorage.removeItem('accessToken');
-    sessionStorage.removeItem('refreshToken');
-    sessionStorage.removeItem('user');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
   },
 
   isAuthenticated: () => {
-    return !!sessionStorage.getItem('accessToken');
+    return !!localStorage.getItem('accessToken');
   },
 
-  hasRole: (role) => {
+  // In this system "USER" is the normal publisher/vendor role
+  isPublisher: () => {
     const user = authUtils.getUser();
-    return user?.role === role;
+    return user?.role === 'USER';
   },
 
   isAdmin: () => {
-    return authUtils.hasRole('ADMIN');
-  },
-
-  isEmployee: () => {
-    return authUtils.hasRole('EMPLOYEE');
+    const user = authUtils.getUser();
+    return user?.role === 'ADMIN';
   },
 };
 
