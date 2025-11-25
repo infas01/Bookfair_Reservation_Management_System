@@ -53,20 +53,53 @@ CREATE INDEX idx_genres_name ON literary_genres(genre_name);
 -- Reservation Service Tables
 -- ============================================
 
+-- CREATE TABLE IF NOT EXISTS reservations (
+--                                             id BIGSERIAL PRIMARY KEY,
+--                                             user_id BIGINT NOT NULL,
+--                                             stall_id BIGINT NOT NULL,
+--                                             business_name VARCHAR(...),
+--                                             contact_name VARCHAR(...),
+--                                             email VARCHAR(...),
+--                                             qr_code VARCHAR(255) UNIQUE NOT NULL,
+--     status VARCHAR(20) DEFAULT 'CONFIRMED' CHECK (status IN ('CONFIRMED', 'CANCELLED')),
+--     reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     cancelled_at TIMESTAMP NULL
+--     );
+
+-- One row per reservation (can cover 1–3 stalls)
 CREATE TABLE IF NOT EXISTS reservations (
-                                            id BIGSERIAL PRIMARY KEY,
-                                            user_id BIGINT NOT NULL,
-                                            stall_id BIGINT NOT NULL,
-                                            qr_code VARCHAR(255) UNIQUE NOT NULL,
-    status VARCHAR(20) DEFAULT 'CONFIRMED' CHECK (status IN ('CONFIRMED', 'CANCELLED')),
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    business_name VARCHAR(255),
+    contact_name VARCHAR(255),
+    email VARCHAR(255),
+    qr_code VARCHAR(255) UNIQUE,  -- keep nullable for now if app doesn't write it yet
+    status VARCHAR(20) DEFAULT 'CONFIRMED'
+        CHECK (status IN ('CONFIRMED', 'CANCELLED')),
     reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     cancelled_at TIMESTAMP NULL
-    );
+);
 
 CREATE INDEX idx_reservations_user_id ON reservations(user_id);
-CREATE INDEX idx_reservations_stall_id ON reservations(stall_id);
+-- CREATE INDEX idx_reservations_stall_id ON reservations(stall_id);
 CREATE INDEX idx_reservations_status ON reservations(status);
 CREATE INDEX idx_reservations_qr_code ON reservations(qr_code);
+
+-- Link table: one row per (reservation, stall)
+-- allows up to 3 stalls per reservation
+CREATE TABLE IF NOT EXISTS reservation_stalls (
+    id BIGSERIAL PRIMARY KEY,
+    reservation_id BIGINT NOT NULL,
+    stall_id BIGINT NOT NULL,
+    stall_code VARCHAR(50) NOT NULL,
+    size VARCHAR(20) NOT NULL
+        CHECK (size IN ('SMALL', 'MEDIUM', 'LARGE')),
+    hall_code VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_reservation_stalls_reservation_id ON reservation_stalls(reservation_id);
+CREATE INDEX idx_reservation_stalls_stall_id ON reservation_stalls(stall_id);
 
 -- ============================================
 -- Sample Data
