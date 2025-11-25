@@ -19,7 +19,8 @@
     "qrcode": "^1.5.4"
   },
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   },
   "keywords": [],
   "author": "",
