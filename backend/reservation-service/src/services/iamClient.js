@@ -30,7 +30,7 @@ async function getAdminAccessToken() {
 }
 
 async function getUserProfile(userAccessToken) {
-  const resp = await axios.get(`${IAM_BASE_URL}/api/profile/me`, {
+  const resp = await axios.get(`${IAM_BASE_URL}/api/profile`, {
     headers: {
       Authorization: `Bearer ${userAccessToken}`,
     },
