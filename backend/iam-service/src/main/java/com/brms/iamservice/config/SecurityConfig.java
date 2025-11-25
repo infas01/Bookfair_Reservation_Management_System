@@ -33,8 +33,17 @@ public class SecurityConfig {
                 // ⭐ ADD CORS FIRST
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(new CorsConfig().corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/test", "/api/auth/refresh", "/api/auth/logout").permitAll()
+                        .requestMatchers(
+                                "/api/auth/register",
+                                "/api/auth/login",
+                                "/api/auth/test",
+                                "/api/auth/refresh",
+                                "/api/auth/logout",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/auth/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/profile/**").authenticated()
