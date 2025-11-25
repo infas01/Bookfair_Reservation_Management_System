@@ -1,12 +1,14 @@
+// src/services/reservationService.js
+
 import axios from 'axios';
 import API_CONFIG from '../config/api';
 import authUtils from '../utils/authUtils';
 
-const apiClient = axios.create({
-  baseURL: API_CONFIG.BASE_URL,
+const reservationClient = axios.create({
+  baseURL: API_CONFIG.RESERVATION_SERVICE_BASE_URL,
 });
 
-apiClient.interceptors.request.use(
+reservationClient.interceptors.request.use(
   (config) => {
     const token = authUtils.getAccessToken();
     if (token) {
@@ -20,7 +22,7 @@ apiClient.interceptors.request.use(
 const reservationService = {
   createReservation: async (stallIds) => {
     try {
-      const response = await apiClient.post(
+      const response = await reservationClient.post(
         API_CONFIG.ENDPOINTS.RESERVATIONS.CREATE,
         { stallIds }
       );
@@ -32,16 +34,31 @@ const reservationService = {
 
   getMyReservations: async () => {
     try {
-      const response = await apiClient.get(API_CONFIG.ENDPOINTS.RESERVATIONS.MY_RESERVATIONS);
+      const response = await reservationClient.get(
+        API_CONFIG.ENDPOINTS.RESERVATIONS.MY_RESERVATIONS
+      );
       return response.data;
     } catch (error) {
       throw error.response?.data || 'Failed to fetch reservations';
     }
   },
 
+  getReservationById: async (reservationId) => {
+    try {
+      const response = await reservationClient.get(
+        API_CONFIG.ENDPOINTS.RESERVATIONS.GET_BY_ID(reservationId)
+      );
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || 'Failed to fetch reservation details';
+    }
+  },
+
   cancelReservation: async (reservationId) => {
     try {
-      const response = await apiClient.put(API_CONFIG.ENDPOINTS.RESERVATIONS.CANCEL(reservationId));
+      const response = await reservationClient.patch(
+        API_CONFIG.ENDPOINTS.RESERVATIONS.CANCEL(reservationId)
+      );
       return response.data;
     } catch (error) {
       throw error.response?.data || 'Failed to cancel reservation';

@@ -19,7 +19,7 @@ import Navbar from '../components/Navbar';
 import Toast from '../components/Toast';
 import authUtils from '../utils/authUtils';
 import stallService from '../services/stallService';
-import reservationService from '../services/reservationService';
+// import reservationService from '../services/reservationService';
 
 const EmployeeHome = () => {
   const [stalls, setStalls] = useState([]);
@@ -44,16 +44,21 @@ const EmployeeHome = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [stallsData, reservationsData] = await Promise.all([
-        stallService.getAllStalls(),
-        reservationService.getAllReservations(),
-      ]);
+
+      // 1) Load real stalls from stall-management-service
+      const stallsData = await stallService.getAllStalls();
       setStalls(stallsData);
-      setReservations(reservationsData);
+
+      // 2) For now, we don't have an admin "get all reservations" API.
+      //    Keep reservations empty, so the UI shows availability from stalls only.
+      setReservations([]);
     } catch (error) {
-      console.error('Error fetching data:', error);
-      showNotification('Failed to load data. Using sample data.', 'warning');
-      loadSampleData();
+      console.error('Error fetching stall data from backend:', error);
+      showNotification(
+        'Failed to load stalls from backend. Using sample data.',
+        'warning'
+      );
+      loadSampleData(); // your existing sample stalls
     } finally {
       setLoading(false);
     }
